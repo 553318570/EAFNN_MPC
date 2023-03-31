@@ -202,23 +202,13 @@ def EAFNN_MPC(model,input,x,N_p,N_c,n,m,lamuda,y_set,err):
     C=C[:,0:N_c-1]
     C = np.insert(C, N_c-1, values=tempClast, axis=1)
     
-    E = np.zeros([n,1])
-    bias=0
-    bias=bias+err
-    for i in range(N_p):
-        k=i+n
-        e=np.array([0])
-        for j in range(n):
-            e=e+W_y[j]*E[k-j-1,:]
-        E = np.insert(E, k, values=e+bias, axis=0)
-    E=E[n:,:]
       
     Yset=y_set*np.ones([N_p,1])
     Yl=x[0,0:n].detach().numpy().reshape(n,1)
     Ul=x[0,n:-1].detach().numpy().reshape(m-1,1)
     uk=x[0,n]*np.ones([N_c,1])
     uk=uk.detach().numpy()
-    Error=Yset-np.matmul(A,Yl)-np.matmul(B,Ul)-E-np.matmul(C,uk)
+    Error=Yset-np.matmul(A,Yl)-np.matmul(B,Ul)-err-np.matmul(C,uk)
     K=np.ones([N_c,N_c])
     K=np.tril(K)
     
